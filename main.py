@@ -8,12 +8,16 @@ class Game:
     def __init__(self):
         self.status = 'game'
         self.score = 0
-        self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join('assets', 'background.png')), (screen_width, screen_height))
+
+        # background
+        self.background = pygame.image.load(os.path.join('assets', 'background.png'))
+        self.background_rect = pygame.Rect(0, 0, 1, 1)
+        self.background_rect_loop = pygame.Rect(0, -self.background.get_height(), 1, 1)
+        self.background_speed = 1
 
         # entities
         self.meteors = []
-        for i in range(8):
+        for i in range(5):
             self.meteors.append(entity.Meteor(screen))
         self.player = entity.Player(screen)
 
@@ -43,9 +47,21 @@ class Game:
                     # temp fix for a collision error
                     if b in self.player.bullets:
                         self.player.bullets.remove(b)
-    
+
+    def scrolling_background(self):
+        if self.background_rect.y <= self.background.get_height():
+            self.background_rect.y += self.background_speed
+        else: self.background_rect.y = self.background_rect_loop.y - self.background.get_height()
+
+        if self.background_rect_loop.y <= self.background.get_height():
+            self.background_rect_loop.y += self.background_speed
+        else: self.background_rect_loop.y = self.background_rect.y - self.background.get_height()
+
+
     def render(self):
-        screen.blit(self.background, (0, 0))
+        screen.blit(self.background, (self.background_rect.x, self.background_rect.y))
+        screen.blit(self.background, (self.background_rect_loop.x, self.background_rect_loop.y))
+
         for b in self.player.bullets:
             b.render()
 
@@ -59,6 +75,7 @@ class Game:
             self.lose.run()
         else:
             self.player.update()
+            self.scrolling_background()
             for m in self.meteors:
                 m.update()
             self.handele_collision()
