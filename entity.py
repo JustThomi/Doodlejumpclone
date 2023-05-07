@@ -18,9 +18,6 @@ class Player:
         self.engine_sprite = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player", "engine.png")), (self.width, self.height))
         self.rect = pygame.Rect(self.start_pos[0], self.start_pos[1], self.width, self.height)
 
-        # movement animation
-        self.tile_size = 48
-
         self.bullets = []
 
 
@@ -52,6 +49,7 @@ class Player:
     
     def reset(self):
         self.hp = 100
+        self.bullets = []
         self.rect.x = self.start_pos[0]
         self.rect.y = self.start_pos[1]
 
