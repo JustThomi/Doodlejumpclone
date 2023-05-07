@@ -9,13 +9,14 @@ class Player:
         self.speed = 5
         self.width, self.height = 100, 100
         self.screen = screen
+        self.start_pos = (self.screen.get_width()/2 - self.width/2, self.screen.get_height()/2)
 
         # sprite and body
         self.very_damaged_sprite = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player", "very_damaged.png")), (self.width, self.height))
         self.damaged_sprite = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player", "damaged.png")), (self.width, self.height))
         self.base_sprite = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player", "normal.png")), (self.width, self.height))
         self.engine_sprite = pygame.transform.scale(pygame.image.load(os.path.join("assets", "player", "engine.png")), (self.width, self.height))
-        self.rect = pygame.Rect(self.screen.get_width()/2, self.screen.get_height()/2, self.width, self.height)
+        self.rect = pygame.Rect(self.start_pos[0], self.start_pos[1], self.width, self.height)
 
         # movement animation
         self.tile_size = 48
@@ -48,6 +49,11 @@ class Player:
 
     def take_damage(self):
         self.hp -= 5
+    
+    def reset(self):
+        self.hp = 100
+        self.rect.x = self.start_pos[0]
+        self.rect.y = self.start_pos[1]
 
     def input(self):
         keys_pressed = pygame.key.get_pressed()
@@ -87,7 +93,6 @@ class Meteor:
         self.screen.blit(self.sprite, (self.rect.x, self.rect.y))
 
 class Bullet:
-
     def __init__(self, player_rect, screen):
         self.size = 6
         self.velocity = 10
